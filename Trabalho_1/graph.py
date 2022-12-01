@@ -7,7 +7,7 @@ class node:
             self.capacidade_b_max = 3
             self.pai = None
             self.filhos = []
-      
+                       
       def __str__(self):
             return "["+str(self.capacidade_a) + " " + str(self.capacidade_b)+"]"
 
@@ -26,7 +26,7 @@ class graph:
       def __init__(self, tipo: str, capacidade_a: int = 0, capacidade_b: int = 0):
             self.tipo = tipo
             self.raiz = node(capacidade_a, capacidade_b)
-      
+            
       def __str__(self):
             return "Não programada ainda"
       
