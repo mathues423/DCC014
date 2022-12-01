@@ -13,7 +13,7 @@ buscas: backtracking, em largura e em profundidade
 '''
 import graph
 
-class Busca:
+class busca:
       '''Para a inicialisação das buscas é necessário que seja passado o conjunto de regras que serão utilizadas.\n
       -Exemplo:\n
             regras = [regra1, regra2, regra3, regra4, regra5, regra6]\n
@@ -29,7 +29,7 @@ class Busca:
             if(len(regras) != 6):
                   raise AttributeError('O número de regras deve ser 6')
             self.regras = regras
-            self.regras_to_action()
+            self.action = self.regras_to_action()
             self.objetivo_jarro_a = objetivo_jarro_a
             self.objetivo_jarro_b = objetivo_jarro_b
       
@@ -70,21 +70,23 @@ class Busca:
             return node
 
       def regras_to_action(self):
+            retorno = []
             for i in range(len(self.regras)):
                   if(self.regras[i] == ['E','A']):
-                        self.regras[i] = self.encher_a
+                        retorno.append(self.encher_a)
                   elif(self.regras[i] == ['E','B']):
-                        self.regras[i] = self.encher_b
+                        retorno.append(self.encher_b)
                   elif(self.regras[i] == ['A','B']):
-                        self.regras[i] = self.passar_a_para_b
+                        retorno.append(self.passar_a_para_b)
                   elif(self.regras[i] == ['B','A']):
-                        self.regras[i] = self.passar_b_para_a
+                        retorno.append(self.passar_b_para_a)
                   elif(self.regras[i] == ['V','A']):
-                        self.regras[i] = self.esvaziar_a
+                        retorno.append(self.esvaziar_a)
                   elif(self.regras[i] == ['V','B']):
-                        self.regras[i] = self.esvasiar_b
+                        retorno.append(self.esvasiar_b)
                   else:
                         raise AttributeError('Regra inválida')
+            return retorno
 
       def verificacao_regras(self, node_pai: graph.node, graph: graph.graph):
             '''Verifica se a regra aplicada gera um estado valido para ser colocado no grafo'''
@@ -94,14 +96,14 @@ class Busca:
                         return True
             return False
 
-      def busca_em_profundidade(self, capacidade_inicial_a:int = 0, capacidade_inicial_b:int = 0):
+      def busca_em_profundidade(self, capacidade_inicial_a:int = 0, capacidade_inicial_b:int = 0, to_string:bool = False):
             '''Busca em profundidade'''
             self.graph = graph.graph("profundidade",capacidade_inicial_a, capacidade_inicial_b)
       
-      def busca_em_largura(self, capacidade_inicial_a:int = 0, capacidade_inicial_b:int = 0):
+      def busca_em_largura(self, capacidade_inicial_a:int = 0, capacidade_inicial_b:int = 0, to_string:bool = False):
             '''Busca em largura'''
             self.graph = graph.graph("largura",capacidade_inicial_a, capacidade_inicial_b)
 
-      def busca_em_backtracking(self, capacidade_inicial_a:int = 0, capacidade_inicial_b:int = 0):
+      def busca_em_backtracking(self, capacidade_inicial_a:int = 0, capacidade_inicial_b:int = 0, to_string:bool = False):
             '''Busca em backtracking'''
             self.graph = graph.graph("backtracking",capacidade_inicial_a, capacidade_inicial_b)

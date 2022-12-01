@@ -1,5 +1,9 @@
-import graph
+import buscas
 if __name__ == '__main__':
-      graph_backtracking = graph.graph("backtracking")
-      graph_largura = graph.graph("largura")
-      graph_profundidade = graph.graph("profundidade")
+      regras = [['E','A'],['V','B'],['B','A'],['V','A'],['A','B'],['E','B']]
+      regras.sort()
+      main = buscas.busca(regras,1)
+      #main.
+      # graph_backtracking = buscas
+      # graph_largura = 
+      # graph_profundidade = 
