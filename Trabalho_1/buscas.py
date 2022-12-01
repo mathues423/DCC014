@@ -33,17 +33,17 @@ class busca:
             self.objetivo_jarro_a = objetivo_jarro_a
             self.objetivo_jarro_b = objetivo_jarro_b
       
-      def encher_a(self, node_pai: graph.node):
+      def encher_a(self, node_pai: graph.node) -> graph.node:
             '''Encher o jarro A'''
             node = graph.node(5, node_pai.capacidade_b)
             return node
 
-      def encher_b(self, node_pai: graph.node):
+      def encher_b(self, node_pai: graph.node) -> graph.node:
             '''Encher o jarro B'''
             node = graph.node(node_pai.capacidade_a, 3)
             return node
 
-      def passar_a_para_b(self, node_pai: graph.node):
+      def passar_a_para_b(self, node_pai: graph.node) -> graph.node:
             '''Passar a água do jarro A para o jarro B'''
             if(node_pai.capacidade_a + node_pai.capacidade_b > 3):
                   node = graph.node(node_pai.capacidade_a - (3 - node_pai.capacidade_b), 3)
@@ -51,7 +51,7 @@ class busca:
                   node = graph.node(0, node_pai.capacidade_a + node_pai.capacidade_b)
             return node
       
-      def passar_b_para_a(self, node_pai: graph.node):
+      def passar_b_para_a(self, node_pai: graph.node) -> graph.node:
             '''Passar a água do jarro B para o jarro A'''
             if(node_pai.capacidade_a + node_pai.capacidade_b > 5):
                   node = graph.node(5, node_pai.capacidade_b - (5 - node_pai.capacidade_a))
@@ -59,17 +59,17 @@ class busca:
                   node = graph.node(node_pai.capacidade_a + node_pai.capacidade_b, 0)
             return node
 
-      def esvaziar_a(self, node_pai: graph.node):
+      def esvaziar_a(self, node_pai: graph.node) -> graph.node:
             '''Esvaziar o jarro A'''
             node = graph.node(0, node_pai.capacidade_b)
             return node
 
-      def esvasiar_b(self, node_pai: graph.node):
+      def esvasiar_b(self, node_pai: graph.node) -> graph.node:
             '''Esvaziar o jarro B'''
             node = graph.node(node_pai.capacidade_a, 0)
             return node
 
-      def regras_to_action(self):
+      def regras_to_action(self) -> list:
             retorno = []
             for i in range(len(self.regras)):
                   if(self.regras[i] == ['E','A']):
@@ -88,7 +88,7 @@ class busca:
                         raise AttributeError('Regra inválida')
             return retorno
 
-      def verificacao_regras(self, node_pai: graph.node, graph: graph.graph):
+      def verificacao_regras(self, node_pai: graph.node, graph: graph.graph) -> bool:
             '''Verifica se a regra aplicada gera um estado valido para ser colocado no grafo'''
             for i in range(len(self.regras)):
                   node = self.regras[i](node_pai)
@@ -96,14 +96,14 @@ class busca:
                         return True
             return False
 
-      def busca_em_profundidade(self, capacidade_inicial_a:int = 0, capacidade_inicial_b:int = 0, to_string:bool = False):
+      def busca_em_profundidade(self, capacidade_inicial_a:int = 0, capacidade_inicial_b:int = 0, to_string:bool = False) -> graph.graph:
             '''Busca em profundidade'''
             self.graph = graph.graph("profundidade",capacidade_inicial_a, capacidade_inicial_b)
       
-      def busca_em_largura(self, capacidade_inicial_a:int = 0, capacidade_inicial_b:int = 0, to_string:bool = False):
+      def busca_em_largura(self, capacidade_inicial_a:int = 0, capacidade_inicial_b:int = 0, to_string:bool = False) -> graph.graph:
             '''Busca em largura'''
             self.graph = graph.graph("largura",capacidade_inicial_a, capacidade_inicial_b)
 
-      def busca_em_backtracking(self, capacidade_inicial_a:int = 0, capacidade_inicial_b:int = 0, to_string:bool = False):
+      def busca_em_backtracking(self, capacidade_inicial_a:int = 0, capacidade_inicial_b:int = 0, to_string:bool = False) -> graph.graph:
             '''Busca em backtracking'''
             self.graph = graph.graph("backtracking",capacidade_inicial_a, capacidade_inicial_b)
