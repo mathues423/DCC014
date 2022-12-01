@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+#prototipos
+prototipos/
+
+#Testes Unitarios dos modulos
+unitTest*.py
