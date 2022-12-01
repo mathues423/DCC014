@@ -86,9 +86,13 @@ class Busca:
                   else:
                         raise AttributeError('Regra inválida')
 
-      def verificacao_regras(self, node_pai: graph.node):
+      def verificacao_regras(self, node_pai: graph.node, graph: graph.graph):
+            '''Verifica se a regra aplicada gera um estado valido para ser colocado no grafo'''
             for i in range(len(self.regras)):
-                 return 
+                  node = self.regras[i](node_pai)
+                  if(not graph.verifica_se_exixte_no_caminho(node, node_pai)):
+                        return True
+            return False
 
       def busca_em_profundidade(self, capacidade_inicial_a:int = 0, capacidade_inicial_b:int = 0):
             '''Busca em profundidade'''
