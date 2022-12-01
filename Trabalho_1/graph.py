@@ -23,9 +23,9 @@ class node:
 
 class graph:
       ''' Estrutura do Grafo '''
-      def __init__(self, tipo: str):
+      def __init__(self, tipo: str, capacidade_a: int = 0, capacidade_b: int = 0):
             self.tipo = tipo
-            self.raiz = node(0,0)
+            self.raiz = node(capacidade_a, capacidade_b)
       
       def __str__(self):
             return "Não programada ainda"
