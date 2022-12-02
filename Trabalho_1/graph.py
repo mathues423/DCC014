@@ -35,10 +35,11 @@ class graph:
                   node_pai.add_filho(node_filho)
 
       def verifica_se_exixte_no_caminho(self, node_filho: node, node_pai: node) -> bool:
-            while(node_pai != None):
-                  if(node_pai.capacidade_a == node_filho.capacidade_a and node_pai.capacidade_b == node_filho.capacidade_b):
+            aux = node_pai
+            while(aux != None):
+                  if(aux.capacidade_a == node_filho.capacidade_a and aux.capacidade_b == node_filho.capacidade_b):
                         return True
-                  node_pai = node_pai.pai
+                  aux = aux.pai
             return False
 
       

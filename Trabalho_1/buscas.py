@@ -89,6 +89,24 @@ class busca:
                         raise AttributeError('Regra inválida')
             return retorno
 
+      def regras_to_string(self) -> str:
+            retorno = ''
+            for i in range(len(self.regras)):
+                  retorno += 'Regra nº '
+                  if(self.regras[i] == ['E','A']):
+                        retorno += str(i+1)+' Encher o jarro A\n'
+                  elif(self.regras[i] == ['E','B']):
+                        retorno += str(i+1)+' Encher o jarro B\n'
+                  elif(self.regras[i] == ['A','B']):
+                        retorno += str(i+1)+' Passar a água do jarro A para o jarro B\n'
+                  elif(self.regras[i] == ['B','A']):
+                        retorno += str(i+1)+' Passar a água do jarro B para o jarro A\n'
+                  elif(self.regras[i] == ['V','A']):
+                        retorno += str(i+1)+' Esvaziar o jarro A\n'
+                  elif(self.regras[i] == ['V','B']):
+                        retorno += str(i+1)+' Esvaziar o jarro B\n'
+            return retorno
+
       def __verificacao_regras(self, node_pai: graph.node) -> bool:
             '''Verifica se a regra aplicada gera um estado valido para ser colocado no grafo'''
             for i in range(len(self.regras)):
@@ -101,17 +119,17 @@ class busca:
             if(self.__verificacao_regras(node_pai)):
                   for i in range(len(self.regras)):
                         node = self.action[i](node_pai)
-                        if(not self.graph.verifica_se_exixte_no_caminho(node, node_pai)):
+                        if(not self.graph.verifica_se_exixte_no_caminho(node, node_pai) and not self.__igual_visinhanca(node, node_pai)):
                               return node
 
-      def __verifica_visinhanca(self, node: graph.node) -> bool:
-            if(node.pai == None):
-                  return True
+      def __igual_visinhanca(self, node: graph.node, node_pai: graph.node) -> bool:
+            if(node_pai.filhos == []):
+                  return False
             else:
-                  for auxiliar in range(len(node.pai.filhos)):
-                        if(node.pai.filhos[auxiliar].capacidade_b == node.capacidade_b and node.pai.filhos[auxiliar].capacidade_a == node.capacidade_a):
-                              return False
-                  return True
+                  for auxiliar in range(len(node_pai.filhos)):
+                        if(node_pai.filhos[auxiliar].capacidade_b == node.capacidade_b and node_pai.filhos[auxiliar].capacidade_a == node.capacidade_a and node_pai.filhos[auxiliar] != node):
+                              return True
+                  return False
                   
       def busca_em_profundidade(self, capacidade_inicial_a:int = 0, capacidade_inicial_b:int = 0, to_string:bool = False) -> graph.graph:
             '''Busca em profundidade'''
@@ -134,14 +152,39 @@ class busca:
 
             lista_abertos = [self.graph.raiz]
             lista_fechados = []
+            variavel_controle = self.graph.raiz
+            if(to_string):
+                  print("Busca em backtracking com a sequinte ordem de regras: ")
+                  print(self.regras_to_string())
+                  print('-'*50)
+                  retorno_str = ''
+                  contador_iteracao = 0
 
-            while(lista_abertos[-1].capacidade_a != self.objetivo_jarro_a):
-                  if(self.__verificacao_regras(lista_abertos[-1])):
-                        node = self.__add_node_to_graph(lista_abertos[-1])
-                        if(not self.graph.verifica_se_exixte_no_caminho(node, lista_abertos[-1]) and self.__verifica_visinhanca(node)):
-                              lista_abertos[-1].add_filho(node)
+            while(variavel_controle.capacidade_a != self.objetivo_jarro_a):
+                  variavel_controle = lista_abertos[-1]
+                  if(to_string):
+                        retorno_str += '\nIteração nº '+str(contador_iteracao)
+                        retorno_str += '\nLista de abertos: '
+                        for i in range(len(lista_abertos)):
+                              retorno_str += ('{} '.format(lista_abertos[i].__str__()))
+                        retorno_str += '\nLista de fechados: '
+                        for i in range(len(lista_fechados)):
+                              retorno_str += ('{} '.format(lista_fechados[i].__str__()))
+                        retorno_str += '\nEstado atual: {}'.format(lista_abertos[-1].__str__())
+                        retorno_str += '\n\n'
+                        retorno_str += '-'*50
+
+                        contador_iteracao += 1
+
+                  if(self.__verificacao_regras(variavel_controle)):
+                        node = self.__add_node_to_graph(variavel_controle)
+                        if(not self.graph.verifica_se_exixte_no_caminho(node, variavel_controle)):
+                              variavel_controle.add_filho(node)
                               lista_abertos.append(node)
                   else:
                         lista_fechados.append(lista_abertos.pop(-1))
+
+            if(to_string):
+                  print(retorno_str)
 
             return self.graph
