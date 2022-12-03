@@ -25,7 +25,7 @@ class busca:
             ['V','A'] quer dizer que é para esvasiar a água do jarro A\n
             ['V','B'] quer dizer que é para esvasiar a água do jarro B\n
        '''
-      def __init__(self, regras: list, objetivo_jarro_a:int=None, objetivo_jarro_b:int=None):
+      def __init__(self, regras: 'list[list[str]]', objetivo_jarro_a:int=None, objetivo_jarro_b:int=None):
             if(len(regras) != 6):
                   raise AttributeError('O número de regras deve ser 6')
             self.regras = regras
@@ -140,12 +140,31 @@ class busca:
                   retorno_str += iteracoes
             return retorno_str
 
-      def __verifica_poda(self, node: graph.node, lista_no_adicionada: list) -> bool:
+      def __verifica_poda(self, node: graph.node, lista_no_adicionada: 'list[graph.node]') -> bool:
             '''Verifica se o no pode ser adicionado na lista de abertos'''
             for i in range(len(lista_no_adicionada)):
-                  if(lista_no_adicionada[i].capacidade_a == node.capacidade_a and lista_no_adicionada[i].capacidade_b == node.capacidade_b):
+                  if(lista_no_adicionada[i].capacidade_a == node.capacidade_a and lista_no_adicionada[i].capacidade_b == node.capacidade_b
+                  and lista_no_adicionada[i].h >= node.h):
                         return True
             return False
+
+      def __poda__(self,node_criado: graph.node, lista_abertos: 'list[graph.node]',lista_fechados: 'list[graph.node]', lista_candidatos: 'list[graph.node]' = None) -> 'list[list[graph.node]]':
+            '''Remove os nos que podem ser podados'''
+            for i in range(len(lista_abertos)):
+                  if(lista_abertos[i].capacidade_a == node_criado.capacidade_a and lista_abertos[i].capacidade_b == node_criado.capacidade_b and lista_abertos[i].h >= node_criado.h):
+                        aux = lista_abertos.pop(i)
+                        if(lista_candidatos != None):
+                              if(aux in lista_candidatos):
+                                    lista_candidatos.remove(aux)
+                              
+                        lista_fechados.append(aux)
+                        break
+
+            if(lista_candidatos != None):
+                  return [lista_abertos, lista_fechados, lista_candidatos]
+            else:
+                  return [lista_abertos, lista_fechados]
+
 
       def busca_em_profundidade(self, capacidade_inicial_a:int = 0, capacidade_inicial_b:int = 0, to_string:bool = False) -> graph.graph:
             '''Busca em profundidade'''
@@ -178,22 +197,24 @@ class busca:
                   retorno_str += '\nEstado atual: {}'.format(lista_canditados_fila[0])
                   retorno_str += '\n'
                   retorno_str += '-'*50 + '\n'
-
-                  contador_peso_no = contador_iteracao
                  
                   while(self.__verificacao_regras(variavel_controle)):
                         node = self.__creat_node_to_graph(variavel_controle)
-                        node.set_peso(contador_peso_no + contador_iteracao)
+                        node.set_altura(variavel_controle.h + 1)
+                        if(self.__verifica_poda(node, lista_abertos)):
+                              lista_abertos, lista_fechados, lista_canditados_fila = self.__poda__(node, lista_abertos, lista_fechados, lista_canditados_fila)
+                        
                         variavel_controle.add_filho(node)
                         lista_abertos.append(node)
                         lista_canditados_fila.append(node)
-                        contador_peso_no += 1
-
+                        
+                              
                   aux = lista_abertos.pop(0)
                   lista_fechados.append(aux)
-                  lista_canditados_fila.remove(aux)
-                              
-                  lista_canditados_fila.sort(key=lambda x: x.peso)
+                  if(aux in lista_canditados_fila):
+                        lista_canditados_fila.remove(aux)
+                  
+                  lista_canditados_fila.sort(key=lambda x: x.h)
                   contador_iteracao += 1
                   
             if(to_string):
