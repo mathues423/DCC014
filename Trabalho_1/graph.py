@@ -7,7 +7,7 @@ class node:
             self.capacidade_b_max = 3
             self.pai = None
             self.filhos = []
-            self.peso = 0
+            self.h = 0
                        
       def __str__(self):
             return "["+str(self.capacidade_a) + " " + str(self.capacidade_b)+"]"
@@ -16,8 +16,8 @@ class node:
             self.filhos.append(filho)
             filho.pai = self
 
-      def set_peso(self, peso):
-            self.peso = peso
+      def set_altura(self, h):
+            self.h = h
 class graph:
       ''' Estrutura do Grafo '''
       def __init__(self, tipo: str, capacidade_a: int = 0, capacidade_b: int = 0):
