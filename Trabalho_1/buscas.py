@@ -89,7 +89,7 @@ class busca:
                         raise AttributeError('Regra inválida')
             return retorno
 
-      def regras_to_string(self) -> str:
+      def regras_string_passos(self) -> str:
             retorno = ''
             for i in range(len(self.regras)):
                   retorno += 'Regra nº '
@@ -134,7 +134,7 @@ class busca:
       def __saida_srt__(self, graph :graph.graph, iteracoes: str = None) -> str:
             retorno_str = '\n'
             retorno_str += 'Busca('+graph.tipo+') com a sequinte ordem de regras:\n'
-            retorno_str += self.regras_to_string()
+            retorno_str += self.regras_string_passos()
             retorno_str += '-'*50 + '\n'
             if(iteracoes != None):
                   retorno_str += iteracoes
@@ -165,13 +165,63 @@ class busca:
             else:
                   return [lista_abertos, lista_fechados]
 
-
-      def busca_em_profundidade(self, capacidade_inicial_a:int = 0, capacidade_inicial_b:int = 0, to_string:bool = False) -> graph.graph:
+      def busca_em_profundidade(self, capacidade_inicial_a:int = 0, capacidade_inicial_b:int = 0, verbose:bool = False) -> graph.graph:
             '''Busca em profundidade'''
             self.graph = None
             self.graph = graph.graph("profundidade",capacidade_inicial_a, capacidade_inicial_b)
 
-      def busca_em_largura(self, capacidade_inicial_a:int = 0, capacidade_inicial_b:int = 0, to_string:bool = False) -> graph.graph:
+            lista_abertos = [self.graph.raiz]
+            lista_canditados_pilha = [self.graph.raiz]
+            lista_fechados = []
+            variavel_controle = self.graph.raiz
+            contador_iteracao = 1
+            retorno_str = ''
+
+            while(variavel_controle.capacidade_a != self.objetivo_jarro_a):
+                  variavel_controle = lista_canditados_pilha[-1]
+
+                  ### Str de interação
+                  retorno_str += 'Iteração nº '+str(contador_iteracao) + '\n'
+                  retorno_str += 'Lista de abertos:' 
+                  for i in range(len(lista_abertos)):
+                        retorno_str += ('{} '.format(lista_abertos[i]))
+                  retorno_str += '\nLista de fechados: '
+                  for i in range(len(lista_fechados)):
+                        retorno_str += ('{} '.format(lista_fechados[i]))
+                  retorno_str += '\nLista de candidatos: '
+                  for i in range(len(lista_canditados_pilha)):
+                        retorno_str += ('{} '.format(lista_canditados_pilha[i]))
+                  retorno_str += '\nEstado atual: {}'.format(lista_canditados_pilha[-1])
+                  retorno_str += '\n'
+                  retorno_str += '-'*50 + '\n'
+                 
+                  while(self.__verificacao_regras(variavel_controle)):
+                        node = self.__creat_node_to_graph(variavel_controle)
+                        node.set_altura(variavel_controle.h + 1)
+                        if(self.__verifica_poda(node, lista_abertos)):
+                              lista_canditados_pilha, lista_fechados, lista_abertos = self.__poda__(node, lista_canditados_pilha, lista_fechados, lista_abertos)
+                        
+                        variavel_controle.add_filho(node)
+                        lista_abertos.append(node)
+                        lista_canditados_pilha.append(node)
+                        
+                              
+                  lista_canditados_pilha.pop(0)
+                  lista_fechados.append(variavel_controle)
+                  if variavel_controle in lista_abertos:
+                        lista_abertos.remove(variavel_controle)
+                  # lista_abertos.remove(variavel_controle)
+                  # lista_abertos.remove(aux)
+                  
+                  lista_canditados_pilha.sort(key=lambda x: x.h)
+                  contador_iteracao += 1
+                  
+            if(verbose):
+                  print(self.__saida_srt__(self.graph, retorno_str))
+
+            return self.graph
+
+      def busca_em_largura(self, capacidade_inicial_a:int = 0, capacidade_inicial_b:int = 0, verbose:bool = False) -> graph.graph:
             '''Busca em largura'''
             self.graph = None
             self.graph = graph.graph("largura",capacidade_inicial_a, capacidade_inicial_b)
@@ -217,12 +267,12 @@ class busca:
                   lista_canditados_fila.sort(key=lambda x: x.h)
                   contador_iteracao += 1
                   
-            if(to_string):
+            if(verbose):
                   print(self.__saida_srt__(self.graph, retorno_str))
 
             return self.graph
 
-      def busca_em_backtracking(self, capacidade_inicial_a:int = 0, capacidade_inicial_b:int = 0, to_string:bool = False) -> graph.graph:
+      def busca_em_backtracking(self, capacidade_inicial_a:int = 0, capacidade_inicial_b:int = 0, verbose:bool = False) -> graph.graph:
             '''Busca em backtracking'''
             self.graph = None
             self.graph = graph.graph("backtracking",capacidade_inicial_a, capacidade_inicial_b)
@@ -257,7 +307,7 @@ class busca:
 
                   contador_iteracao += 1
 
-            if(to_string):
+            if(verbose):
                   print(self.__saida_srt__(self.graph, retorno_str))
 
             return self.graph
