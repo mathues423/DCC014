@@ -115,7 +115,7 @@ class busca:
                         return True
             return False
 
-      def __add_node_to_graph(self, node_pai: graph.node) -> graph.node:
+      def __creat_node_to_graph(self, node_pai: graph.node) -> graph.node:
             if(self.__verificacao_regras(node_pai)):
                   for i in range(len(self.regras)):
                         node = self.action[i](node_pai)
@@ -140,11 +140,17 @@ class busca:
                   retorno_str += iteracoes
             return retorno_str
 
+      def __verifica_poda(self, node: graph.node, lista_no_adicionada: list) -> bool:
+            '''Verifica se o no pode ser adicionado na lista de abertos'''
+            for i in range(len(lista_no_adicionada)):
+                  if(lista_no_adicionada[i].capacidade_a == node.capacidade_a and lista_no_adicionada[i].capacidade_b == node.capacidade_b):
+                        return True
+            return False
+
       def busca_em_profundidade(self, capacidade_inicial_a:int = 0, capacidade_inicial_b:int = 0, to_string:bool = False) -> graph.graph:
             '''Busca em profundidade'''
             self.graph = None
             self.graph = graph.graph("profundidade",capacidade_inicial_a, capacidade_inicial_b)
-
 
       def busca_em_largura(self, capacidade_inicial_a:int = 0, capacidade_inicial_b:int = 0, to_string:bool = False) -> graph.graph:
             '''Busca em largura'''
@@ -176,7 +182,7 @@ class busca:
                   contador_peso_no = contador_iteracao
                  
                   while(self.__verificacao_regras(variavel_controle)):
-                        node = self.__add_node_to_graph(variavel_controle)
+                        node = self.__creat_node_to_graph(variavel_controle)
                         node.set_peso(contador_peso_no + contador_iteracao)
                         variavel_controle.add_filho(node)
                         lista_abertos.append(node)
@@ -222,7 +228,7 @@ class busca:
                   retorno_str += '-'*50 + '\n'
 
                   if(self.__verificacao_regras(variavel_controle)):
-                        node = self.__add_node_to_graph(variavel_controle)
+                        node = self.__creat_node_to_graph(variavel_controle)
                         variavel_controle.add_filho(node)
                         lista_abertos.append(node)
                   else:
