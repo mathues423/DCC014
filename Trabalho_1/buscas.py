@@ -111,7 +111,7 @@ class busca:
             '''Verifica se a regra aplicada gera um estado valido para ser colocado no grafo'''
             for i in range(len(self.regras)):
                   node = self.action[i](node_pai)
-                  if(not self.graph.verifica_se_exixte_no_caminho(node, node_pai)):
+                  if(not self.graph.verifica_se_exixte_no_caminho(node, node_pai) and not self.__igual_visinhanca(node, node_pai)):
                         return True
             return False
 
@@ -130,61 +130,107 @@ class busca:
                         if(node_pai.filhos[auxiliar].capacidade_b == node.capacidade_b and node_pai.filhos[auxiliar].capacidade_a == node.capacidade_a and node_pai.filhos[auxiliar] != node):
                               return True
                   return False
-                  
+
+      def __saida_srt__(self, graph :graph.graph, iteracoes: str = None) -> str:
+            retorno_str = '\n'
+            retorno_str += 'Busca('+graph.tipo+') com a sequinte ordem de regras:\n'
+            retorno_str += self.regras_to_string()
+            retorno_str += '-'*50 + '\n'
+            if(iteracoes != None):
+                  retorno_str += iteracoes
+            return retorno_str
+
       def busca_em_profundidade(self, capacidade_inicial_a:int = 0, capacidade_inicial_b:int = 0, to_string:bool = False) -> graph.graph:
             '''Busca em profundidade'''
-            if(self.graph != None):
-                  self.graph = None
+            self.graph = None
             self.graph = graph.graph("profundidade",capacidade_inicial_a, capacidade_inicial_b)
 
 
       def busca_em_largura(self, capacidade_inicial_a:int = 0, capacidade_inicial_b:int = 0, to_string:bool = False) -> graph.graph:
             '''Busca em largura'''
-            if(self.graph != None):
-                  self.graph = None
+            self.graph = None
             self.graph = graph.graph("largura",capacidade_inicial_a, capacidade_inicial_b)
+
+            lista_abertos = [self.graph.raiz]
+            lista_canditados_fila = [self.graph.raiz]
+            lista_fechados = []
+            variavel_controle = self.graph.raiz
+            contador_iteracao = 1
+            retorno_str = ''
+
+            while(variavel_controle.capacidade_a != self.objetivo_jarro_a):
+                  variavel_controle = lista_canditados_fila[0]
+
+                  ### Str de interação
+                  retorno_str += 'Iteração nº '+str(contador_iteracao) + '\n'
+                  retorno_str += 'Lista de abertos:' 
+                  for i in range(len(lista_abertos)):
+                        retorno_str += ('{} '.format(lista_abertos[i]))
+                  retorno_str += '\nLista de fechados: '
+                  for i in range(len(lista_fechados)):
+                        retorno_str += ('{} '.format(lista_fechados[i]))
+                  retorno_str += '\nEstado atual: {}'.format(lista_canditados_fila[0])
+                  retorno_str += '\n'
+                  retorno_str += '-'*50 + '\n'
+
+                  contador_peso_no = contador_iteracao
+                 
+                  while(self.__verificacao_regras(variavel_controle)):
+                        node = self.__add_node_to_graph(variavel_controle)
+                        node.set_peso(contador_peso_no + contador_iteracao)
+                        variavel_controle.add_filho(node)
+                        lista_abertos.append(node)
+                        lista_canditados_fila.append(node)
+                        contador_peso_no += 1
+
+                  aux = lista_abertos.pop(0)
+                  lista_fechados.append(aux)
+                  lista_canditados_fila.remove(aux)
+                              
+                  lista_canditados_fila.sort(key=lambda x: x.peso)
+                  contador_iteracao += 1
+                  
+            if(to_string):
+                  print(self.__saida_srt__(self.graph, retorno_str))
+
+            return self.graph
 
       def busca_em_backtracking(self, capacidade_inicial_a:int = 0, capacidade_inicial_b:int = 0, to_string:bool = False) -> graph.graph:
             '''Busca em backtracking'''
-            if(self.graph != None):
-                  self.graph = None
+            self.graph = None
             self.graph = graph.graph("backtracking",capacidade_inicial_a, capacidade_inicial_b)
 
             lista_abertos = [self.graph.raiz]
             lista_fechados = []
             variavel_controle = self.graph.raiz
-            if(to_string):
-                  print("Busca em backtracking com a sequinte ordem de regras: ")
-                  print(self.regras_to_string())
-                  print('-'*50)
-                  retorno_str = ''
-                  contador_iteracao = 0
+            contador_iteracao = 1
+            retorno_str = ''
 
             while(variavel_controle.capacidade_a != self.objetivo_jarro_a):
                   variavel_controle = lista_abertos[-1]
-                  if(to_string):
-                        retorno_str += '\nIteração nº '+str(contador_iteracao)
-                        retorno_str += '\nLista de abertos: '
-                        for i in range(len(lista_abertos)):
-                              retorno_str += ('{} '.format(lista_abertos[i].__str__()))
-                        retorno_str += '\nLista de fechados: '
-                        for i in range(len(lista_fechados)):
-                              retorno_str += ('{} '.format(lista_fechados[i].__str__()))
-                        retorno_str += '\nEstado atual: {}'.format(lista_abertos[-1].__str__())
-                        retorno_str += '\n\n'
-                        retorno_str += '-'*50
 
-                        contador_iteracao += 1
+                  ### Str de interação
+                  retorno_str += 'Iteração nº '+str(contador_iteracao) + '\n'
+                  retorno_str += 'Lista de abertos:' 
+                  for i in range(len(lista_abertos)):
+                        retorno_str += ('{} '.format(lista_abertos[i]))
+                  retorno_str += '\nLista de fechados: '
+                  for i in range(len(lista_fechados)):
+                        retorno_str += ('{} '.format(lista_fechados[i]))
+                  retorno_str += '\nEstado atual: {}'.format(lista_abertos[-1])
+                  retorno_str += '\n'
+                  retorno_str += '-'*50 + '\n'
 
                   if(self.__verificacao_regras(variavel_controle)):
                         node = self.__add_node_to_graph(variavel_controle)
-                        if(not self.graph.verifica_se_exixte_no_caminho(node, variavel_controle)):
-                              variavel_controle.add_filho(node)
-                              lista_abertos.append(node)
+                        variavel_controle.add_filho(node)
+                        lista_abertos.append(node)
                   else:
                         lista_fechados.append(lista_abertos.pop(-1))
 
+                  contador_iteracao += 1
+
             if(to_string):
-                  print(retorno_str)
+                  print(self.__saida_srt__(self.graph, retorno_str))
 
             return self.graph
