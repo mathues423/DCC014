@@ -1,16 +1,6 @@
-''' Descrição do problema: 
-Você tem 2 jarros sem nenhuma marcação, com as respectivas capacidades: 1º 5 litros e o 2º 3 litros
-. O propósito do problema é que ocorra uma situação final de que o jarro de maior capacidade 
-fique com exatamente 1 litro.
-. Você pode executar as seguintes ações:
-      • Enxer totalmente um jarro com a água do poço;
-      • Esvaziar totalmente um jarro jogando a água na grama;
-      • Passar a água de um jarro para o outro.
-      • Os jarros começam vazios.
-Um ponto a observar é que a movimentação exige o cuidado de não ultrapassar a capacidade dos respectivos jarros.
+"""
 
-buscas: backtracking, em largura e em profundidade
-'''
+"""
 import graph
 
 class busca: 
@@ -32,7 +22,7 @@ class busca:
             self.action = self.__regras_to_action()
             self.objetivo_jarro_a = objetivo_jarro_a
             self.objetivo_jarro_b = objetivo_jarro_b
-            self.graph = None
+            self.graph = graph.graph('Não inicializado')
       
       def __encher_a(self, node_pai: graph.node) -> graph.node:
             '''Encher o jarro A'''
@@ -111,7 +101,7 @@ class busca:
             '''Verifica se a regra aplicada gera um estado valido para ser colocado no grafo'''
             for regra in self.action:
                   node = regra(node_pai)
-                  if(not self.graph.verifica_se_exixte_no_caminho(node, node_pai) and not self.__igual_visinhanca(node, node_pai)):
+                  if(not self.graph.__verifica_se_exixte_no_caminho__(node, node_pai) and not self.__igual_visinhanca(node, node_pai)):
                         return True
             return False
 
@@ -119,7 +109,7 @@ class busca:
             if(self.__verificacao_regras(node_pai)):
                   for regra in self.action:
                         node = regra(node_pai)
-                        if(not self.graph.verifica_se_exixte_no_caminho(node, node_pai) and not self.__igual_visinhanca(node, node_pai)):
+                        if(not self.graph.__verifica_se_exixte_no_caminho__(node, node_pai) and not self.__igual_visinhanca(node, node_pai)):
                               return node
 
       def __igual_visinhanca(self, node: graph.node, node_pai: graph.node) -> bool:
@@ -201,7 +191,6 @@ class busca:
                  
                   while(self.__verificacao_regras(variavel_controle)):
                         node = self.__creat_node_to_graph(variavel_controle)
-                        node.set_altura(variavel_controle.get_altura() + 1)
                         if(self.__verifica_poda(node, lista_abertos)):
                               lista_canditados_pilha, lista_fechados, lista_abertos = self.__poda__(node, lista_canditados_pilha, lista_fechados, lista_abertos)
                         
@@ -209,7 +198,6 @@ class busca:
                         lista_abertos.append(node)
                         lista_canditados_pilha.append(node)
                         
-                              
                   lista_canditados_pilha.pop(0)
                   lista_fechados.append(variavel_controle)
                   if variavel_controle in lista_abertos:
@@ -243,15 +231,13 @@ class busca:
                  
                   while(self.__verificacao_regras(variavel_controle)):
                         node = self.__creat_node_to_graph(variavel_controle)
-                        node.set_altura(variavel_controle.get_altura() + 1)
                         if(self.__verifica_poda(node, lista_abertos)):
                               lista_abertos, lista_fechados, lista_canditados_fila = self.__poda__(node, lista_abertos, lista_fechados, lista_canditados_fila)
                         
                         variavel_controle.add_filho(node)
                         lista_abertos.append(node)
                         lista_canditados_fila.append(node)
-                        
-                              
+                          
                   aux = lista_abertos.pop(0)
                   lista_fechados.append(aux)
                   if(aux in lista_canditados_fila):
