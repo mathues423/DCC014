@@ -8,7 +8,7 @@
             "name": "Python: Current File",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}//Trabalho_1//main.py",
+            "program": "${workspaceFolder}//Trabalho_baldes_dagua//main.py",
             "console": "integratedTerminal",
             "justMyCode": true
         }
