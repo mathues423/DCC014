@@ -36,7 +36,7 @@ def escolha_trabalho() -> int:
       print('2 - Trabalho 2')
       print('3 - Sair')
       print('4 - Alteração da ordem das regras')
-      print('5- Limpar tela\n :', end='')
+      print('5- Limpar tela:\n', end='')
       escolha = int(input())
       while escolha not in [1, 2, 3, 4, 5]:
             escolha = int(input())
@@ -47,11 +47,11 @@ def escolha_busca(escolha_trabalho: int):
       if escolha_trabalho == 1:
             print('1 - Backtracking')
             print('2 - Em largura')
-            print('3 - Em profundidade\n:', end='')
+            print('3 - Em profundidade:\n', end='')
       else:
             print('1 - Ordenada')
             print('2 - Gulosa')
-            print('3 - A*\n:', end='')
+            print('3 - A*:\n', end='')
       escolha = int(input())
       while escolha not in [1, 2, 3]:
             escolha = int(input())
@@ -88,10 +88,10 @@ def tela_inicial(busca: busca):
       O propósito do problema é que ocorra uma situação final de que o jarro de maior capacidade 
       fique com exatamente 1 litro.
       - Você pode executar as seguintes ações:
-            - Enxer totalmente um jarro com a água do poço.\n
-            - Esvaziar totalmente um jarro jogando a água na grama.\n
-            - Passar a água de um jarro para o outro.\n
-            - Os jarros começam vazios.\n
+            - Enxer totalmente um jarro com a água do poço.
+            - Esvaziar totalmente um jarro jogando a água na grama.
+            - Passar a água de um jarro para o outro.
+            - Os jarros começam vazios.
 
       --------------------------------------------------------
       Um ponto a observar é que a movimentação exige o cuidado de não ultrapassar a capacidade dos respectivos jarros.
