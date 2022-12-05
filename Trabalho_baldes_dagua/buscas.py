@@ -186,7 +186,10 @@ class busca:
 
                   ### Str de interação
                   retorno_str += self.__saida_intermediaria_str__(lista_abertos, lista_fechados, variavel_controle, contador_iteracao)
-                 
+                  if(variavel_controle.capacidade_a == self.objetivo_jarro_a):
+                        self.graph.add_node_resposta(variavel_controle)
+                        break
+
                   while(self.__verificacao_regras(variavel_controle)):
                         node = self.__creat_node_to_graph(variavel_controle)
                         if(self.__verifica_poda(node, lista_abertos)):
@@ -226,7 +229,10 @@ class busca:
 
                   ### Str de interação
                   retorno_str += self.__saida_intermediaria_str__(lista_abertos, lista_fechados, variavel_controle, contador_iteracao)
-                 
+                  if(variavel_controle.capacidade_a == self.objetivo_jarro_a):
+                        self.graph.add_node_resposta(variavel_controle)
+                        break
+
                   while(self.__verificacao_regras(variavel_controle)):
                         node = self.__creat_node_to_graph(variavel_controle)
                         if(self.__verifica_poda(node, lista_abertos)):
@@ -265,7 +271,10 @@ class busca:
 
                   ### Str de interação
                   retorno_str += self.__saida_intermediaria_str__(lista_abertos, lista_fechados, variavel_controle, contador_iteracao)
-
+                  if(variavel_controle.capacidade_a == self.objetivo_jarro_a):
+                        self.graph.add_node_resposta(variavel_controle)
+                        break
+                  
                   if(self.__verificacao_regras(variavel_controle)):
                         node = self.__creat_node_to_graph(variavel_controle)
                         variavel_controle.add_filho(node)

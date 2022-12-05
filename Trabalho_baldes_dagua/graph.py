@@ -71,7 +71,8 @@ class graph:
       def __init__(self, tipo: str, capacidade_a: int = 0, capacidade_b: int = 0):
             self.tipo = tipo
             self.raiz = node(capacidade_a, capacidade_b)
-            
+            self.node_resposta = None
+
       def __str__(self):
             retorno = ''
             node_aux = self.raiz
@@ -79,19 +80,26 @@ class graph:
 
             while(candidatos != []):
                   node_aux = candidatos[0]
-                  retorno += ' Pai: ' + str(node_aux.pai) + 'Node: '+ str(node_aux)
+                  retorno += ' Pai: ' + str(node_aux.pai)
                   if(node_aux.get_peso_aresta() != 0):
-                        retorno += ' Peso: ' + str(node_aux.get_peso_aresta())
-                        #Condição caso tenha peso nas arestas
+                        retorno += ' Peso da aresta: ' + str(node_aux.get_peso_aresta())
+                  retorno += ' Node: '+ str(node_aux)
                   retorno += ' |h: ' + str(node_aux.get_altura()) + '\n'
                   candidatos.remove(node_aux)
                   candidatos += node_aux.filhos
+            node_aux = self.node_resposta
+            retorno += '\nResposta: \n'
+            resposta = []
+            while(node_aux != None):
+                  resposta.append('Node: '+ str(node_aux) + ' |h: ' + str(node_aux.get_altura()) + '\n')
+                  node_aux = node_aux.pai
+            resposta.reverse()
+            for i in resposta:
+                  retorno += i
             return retorno
       
-      def add_node(self, node_filho: node, node_pai: node):
-            if(not self.__verifica_se_exixte_no_caminho__(node_filho, node_pai)):
-                  node_filho.__set_altura__(node_pai.get_altura() + 1)
-                  node_pai.add_filho(node_filho)
+      def add_node_resposta(self, node_resposta: node):
+            self.node_resposta = node_resposta
 
       def __verifica_se_exixte_no_caminho__(self, node_filho: node, node_pai: node) -> bool:
             aux = node_pai
