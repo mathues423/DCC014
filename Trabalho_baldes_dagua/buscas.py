@@ -130,8 +130,6 @@ class busca:
                   retorno_str += iteracoes
             retorno_str += 'Grafo gerado:\n'
             retorno_str += graph.__str__()
-            #retorno_str += 'Caminho encontrado:\n'
-            #retorno_str += graph.caminho()
             return retorno_str
       
       def __saida_intermediaria_str__(self, abertos:list, fechados:list, atual:graph.node, n_iteracao: int) -> str:

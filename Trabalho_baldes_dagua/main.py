@@ -11,7 +11,7 @@ def clear():
     else:
         _ = system('clear')
 
-def escolha_type_trabalho(escolha_trabalho: int, escolha_busca: int):
+def escolha_type_trabalho(busca: busca,escolha_trabalho: int, escolha_busca: int):
       if escolha_trabalho == 1:
             if escolha_busca == 1:
                   busca.busca_em_backtracking(verbose=True)
@@ -109,7 +109,7 @@ def tela_inicial(busca: busca):
                   break
             if escolha_t != 4 and escolha_t != 5:
                   escolha_b = escolha_busca(escolha_t)
-                  escolha_type_trabalho(escolha_t, escolha_b)
+                  escolha_type_trabalho(busca, escolha_t, escolha_b)
             elif escolha_t == 4:
                   escolha_r = escolha_regras()
                   busca.regras = escolha_r
@@ -121,10 +121,3 @@ if __name__ == '__main__':
       regras = [['E','A'],['E','B'],['V','A'],['V','B'],['A','B'],['B','A']]
       main = busca(regras,1)
       tela_inicial(main)
-      
-# main.busca_em_backtracking(verbose=True)
-# main.busca_em_largura(verbose=True)
-# main.busca_em_profundidade(verbose=True)
-#main.busca_ordenada(verbose=True)
-#main.busca_gulosa(verbose=True)
-#main.busca_A_estrela(verbose=True)
