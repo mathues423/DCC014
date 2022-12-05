@@ -72,18 +72,18 @@ class busca:
 
       def __regras_to_action(self) -> list:
             retorno = []
-            for i in range(len(self.regras)):
-                  if(self.regras[i] == ['E','A']):
+            for regra in self.regras:
+                  if(regra == ['E','A']):
                         retorno.append(self.__encher_a)
-                  elif(self.regras[i] == ['E','B']):
+                  elif(regra == ['E','B']):
                         retorno.append(self.__encher_b)
-                  elif(self.regras[i] == ['A','B']):
+                  elif(regra == ['A','B']):
                         retorno.append(self.__passar_a_para_b)
-                  elif(self.regras[i] == ['B','A']):
+                  elif(regra == ['B','A']):
                         retorno.append(self.__passar_b_para_a)
-                  elif(self.regras[i] == ['V','A']):
+                  elif(regra == ['V','A']):
                         retorno.append(self.__esvaziar_a)
-                  elif(self.regras[i] == ['V','B']):
+                  elif(regra == ['V','B']):
                         retorno.append(self.__esvasiar_b)
                   else:
                         raise AttributeError('Regra inválida')
@@ -91,34 +91,34 @@ class busca:
 
       def regras_string_passos(self) -> str:
             retorno = ''
-            for i in range(len(self.regras)):
+            for index, regra in enumerate(self.regras):
                   retorno += 'Regra nº '
-                  if(self.regras[i] == ['E','A']):
-                        retorno += str(i+1)+' Encher o jarro A\n'
-                  elif(self.regras[i] == ['E','B']):
-                        retorno += str(i+1)+' Encher o jarro B\n'
-                  elif(self.regras[i] == ['A','B']):
-                        retorno += str(i+1)+' Passar a água do jarro A para o jarro B\n'
-                  elif(self.regras[i] == ['B','A']):
-                        retorno += str(i+1)+' Passar a água do jarro B para o jarro A\n'
-                  elif(self.regras[i] == ['V','A']):
-                        retorno += str(i+1)+' Esvaziar o jarro A\n'
-                  elif(self.regras[i] == ['V','B']):
-                        retorno += str(i+1)+' Esvaziar o jarro B\n'
+                  if(regra == ['E','A']):
+                        retorno += str(index+1)+' Encher o jarro A\n'
+                  elif(regra == ['E','B']):
+                        retorno += str(index+1)+' Encher o jarro B\n'
+                  elif(regra == ['A','B']):
+                        retorno += str(index+1)+' Passar a água do jarro A para o jarro B\n'
+                  elif(regra == ['B','A']):
+                        retorno += str(index+1)+' Passar a água do jarro B para o jarro A\n'
+                  elif(regra == ['V','A']):
+                        retorno += str(index+1)+' Esvaziar o jarro A\n'
+                  elif(regra == ['V','B']):
+                        retorno += str(index+1)+' Esvaziar o jarro B\n'
             return retorno
 
       def __verificacao_regras(self, node_pai: graph.node) -> bool:
             '''Verifica se a regra aplicada gera um estado valido para ser colocado no grafo'''
-            for i in range(len(self.regras)):
-                  node = self.action[i](node_pai)
+            for regra in self.action:
+                  node = regra(node_pai)
                   if(not self.graph.verifica_se_exixte_no_caminho(node, node_pai) and not self.__igual_visinhanca(node, node_pai)):
                         return True
             return False
 
       def __creat_node_to_graph(self, node_pai: graph.node) -> graph.node:
             if(self.__verificacao_regras(node_pai)):
-                  for i in range(len(self.regras)):
-                        node = self.action[i](node_pai)
+                  for regra in self.action:
+                        node = regra(node_pai)
                         if(not self.graph.verifica_se_exixte_no_caminho(node, node_pai) and not self.__igual_visinhanca(node, node_pai)):
                               return node
 
@@ -126,8 +126,8 @@ class busca:
             if(node_pai.filhos == []):
                   return False
             else:
-                  for auxiliar in range(len(node_pai.filhos)):
-                        if(node_pai.filhos[auxiliar].capacidade_b == node.capacidade_b and node_pai.filhos[auxiliar].capacidade_a == node.capacidade_a and node_pai.filhos[auxiliar] != node):
+                  for auxiliar in node_pai.filhos:
+                        if(auxiliar.capacidade_b == node.capacidade_b and auxiliar.capacidade_a == node.capacidade_a and auxiliar != node):
                               return True
                   return False
 
@@ -138,21 +138,25 @@ class busca:
             retorno_str += '-'*50 + '\n'
             if(iteracoes != None):
                   retorno_str += iteracoes
+            retorno_str += 'Grafo gerado:\n'
+            retorno_str += graph.__str__()
+            #retorno_str += 'Caminho encontrado:\n'
+            #retorno_str += graph.caminho()
             return retorno_str
 
       def __verifica_poda(self, node: graph.node, lista_no_adicionada: 'list[graph.node]') -> bool:
             '''Verifica se o no pode ser adicionado na lista de abertos'''
-            for i in range(len(lista_no_adicionada)):
-                  if(lista_no_adicionada[i].capacidade_a == node.capacidade_a and lista_no_adicionada[i].capacidade_b == node.capacidade_b
-                  and lista_no_adicionada[i].h >= node.h):
+            for node_aux in lista_no_adicionada:
+                  if(node_aux.capacidade_a == node.capacidade_a and node_aux.capacidade_b == node.capacidade_b
+                  and node_aux.get_altura() >= node.get_altura()):
                         return True
             return False
 
       def __poda__(self,node_criado: graph.node, lista_abertos: 'list[graph.node]',lista_fechados: 'list[graph.node]', lista_candidatos: 'list[graph.node]' = None) -> 'list[list[graph.node]]':
             '''Remove os nos que podem ser podados'''
-            for i in range(len(lista_abertos)):
-                  if(lista_abertos[i].capacidade_a == node_criado.capacidade_a and lista_abertos[i].capacidade_b == node_criado.capacidade_b and lista_abertos[i].h >= node_criado.h):
-                        aux = lista_abertos.pop(i)
+            for index, node in enumerate(lista_abertos):
+                  if(node.capacidade_a == node_criado.capacidade_a and node.capacidade_b == node_criado.capacidade_b and node.get_altura() >= node_criado.get_altura()):
+                        aux = lista_abertos.pop(index)
                         if(lista_candidatos != None):
                               if(aux in lista_candidatos):
                                     lista_candidatos.remove(aux)
@@ -183,21 +187,21 @@ class busca:
                   ### Str de interação
                   retorno_str += 'Iteração nº '+str(contador_iteracao) + '\n'
                   retorno_str += 'Lista de abertos:' 
-                  for i in range(len(lista_abertos)):
-                        retorno_str += ('{} '.format(lista_abertos[i]))
+                  for i in lista_abertos:
+                        retorno_str += ('{} '.format(i))
                   retorno_str += '\nLista de fechados: '
-                  for i in range(len(lista_fechados)):
-                        retorno_str += ('{} '.format(lista_fechados[i]))
+                  for i in lista_fechados:
+                        retorno_str += ('{} '.format(i))
                   retorno_str += '\nLista de candidatos: '
-                  for i in range(len(lista_canditados_pilha)):
-                        retorno_str += ('{} '.format(lista_canditados_pilha[i]))
+                  for i in lista_canditados_pilha:
+                        retorno_str += ('{} '.format(i))
                   retorno_str += '\nEstado atual: {}'.format(lista_canditados_pilha[-1])
                   retorno_str += '\n'
                   retorno_str += '-'*50 + '\n'
                  
                   while(self.__verificacao_regras(variavel_controle)):
                         node = self.__creat_node_to_graph(variavel_controle)
-                        node.set_altura(variavel_controle.h + 1)
+                        node.set_altura(variavel_controle.get_altura() + 1)
                         if(self.__verifica_poda(node, lista_abertos)):
                               lista_canditados_pilha, lista_fechados, lista_abertos = self.__poda__(node, lista_canditados_pilha, lista_fechados, lista_abertos)
                         
@@ -210,10 +214,8 @@ class busca:
                   lista_fechados.append(variavel_controle)
                   if variavel_controle in lista_abertos:
                         lista_abertos.remove(variavel_controle)
-                  # lista_abertos.remove(variavel_controle)
-                  # lista_abertos.remove(aux)
                   
-                  lista_canditados_pilha.sort(key=lambda x: x.h)
+                  lista_canditados_pilha.sort(key=lambda x: x.get_altura())
                   contador_iteracao += 1
                   
             if(verbose):
@@ -239,18 +241,18 @@ class busca:
                   ### Str de interação
                   retorno_str += 'Iteração nº '+str(contador_iteracao) + '\n'
                   retorno_str += 'Lista de abertos:' 
-                  for i in range(len(lista_abertos)):
-                        retorno_str += ('{} '.format(lista_abertos[i]))
+                  for i in lista_abertos:
+                        retorno_str += ('{} '.format(i))
                   retorno_str += '\nLista de fechados: '
-                  for i in range(len(lista_fechados)):
-                        retorno_str += ('{} '.format(lista_fechados[i]))
+                  for i in lista_fechados:
+                        retorno_str += ('{} '.format(i))
                   retorno_str += '\nEstado atual: {}'.format(lista_canditados_fila[0])
                   retorno_str += '\n'
                   retorno_str += '-'*50 + '\n'
                  
                   while(self.__verificacao_regras(variavel_controle)):
                         node = self.__creat_node_to_graph(variavel_controle)
-                        node.set_altura(variavel_controle.h + 1)
+                        node.set_altura(variavel_controle.get_altura() + 1)
                         if(self.__verifica_poda(node, lista_abertos)):
                               lista_abertos, lista_fechados, lista_canditados_fila = self.__poda__(node, lista_abertos, lista_fechados, lista_canditados_fila)
                         
@@ -264,7 +266,7 @@ class busca:
                   if(aux in lista_canditados_fila):
                         lista_canditados_fila.remove(aux)
                   
-                  lista_canditados_fila.sort(key=lambda x: x.h)
+                  lista_canditados_fila.sort(key=lambda x: x.get_altura())
                   contador_iteracao += 1
                   
             if(verbose):
@@ -289,11 +291,11 @@ class busca:
                   ### Str de interação
                   retorno_str += 'Iteração nº '+str(contador_iteracao) + '\n'
                   retorno_str += 'Lista de abertos:' 
-                  for i in range(len(lista_abertos)):
-                        retorno_str += ('{} '.format(lista_abertos[i]))
+                  for i in lista_abertos:
+                        retorno_str += ('{} '.format(i))
                   retorno_str += '\nLista de fechados: '
-                  for i in range(len(lista_fechados)):
-                        retorno_str += ('{} '.format(lista_fechados[i]))
+                  for i in lista_abertos:
+                        retorno_str += ('{} '.format(i))
                   retorno_str += '\nEstado atual: {}'.format(lista_abertos[-1])
                   retorno_str += '\n'
                   retorno_str += '-'*50 + '\n'
