@@ -13,7 +13,7 @@ buscas: backtracking, em largura e em profundidade
 '''
 import graph
 
-class busca:
+class busca: 
       '''Para a inicialisação das buscas é necessário que seja passado o conjunto de regras que serão utilizadas.\n
       -Exemplo:\n
             regras = [regra1, regra2, regra3, regra4, regra5, regra6]\n
@@ -143,6 +143,18 @@ class busca:
             #retorno_str += 'Caminho encontrado:\n'
             #retorno_str += graph.caminho()
             return retorno_str
+      
+      def __saida_intermediaria_str__(self, abertos:list, fechados:list, atual:graph.node, n_iteracao: int) -> str:
+            retorno = 'Iteração nº '+str(n_iteracao) + '\n'
+            retorno += 'Lista de abertos:'
+            for node in abertos:
+                  retorno += ('{} '.format(node))
+            retorno += '\nLista de fechados: '
+            for node in fechados:
+                  retorno += ('{} '.format(node))
+            retorno += '\nEstado atual: ' + str(atual) + '\n'
+            retorno += '-'*50 + '\n'
+            return retorno
 
       def __verifica_poda(self, node: graph.node, lista_no_adicionada: 'list[graph.node]') -> bool:
             '''Verifica se o no pode ser adicionado na lista de abertos'''
@@ -185,19 +197,7 @@ class busca:
                   variavel_controle = lista_canditados_pilha[-1]
 
                   ### Str de interação
-                  retorno_str += 'Iteração nº '+str(contador_iteracao) + '\n'
-                  retorno_str += 'Lista de abertos:' 
-                  for i in lista_abertos:
-                        retorno_str += ('{} '.format(i))
-                  retorno_str += '\nLista de fechados: '
-                  for i in lista_fechados:
-                        retorno_str += ('{} '.format(i))
-                  retorno_str += '\nLista de candidatos: '
-                  for i in lista_canditados_pilha:
-                        retorno_str += ('{} '.format(i))
-                  retorno_str += '\nEstado atual: {}'.format(lista_canditados_pilha[-1])
-                  retorno_str += '\n'
-                  retorno_str += '-'*50 + '\n'
+                  retorno_str += self.__saida_intermediaria_str__(lista_abertos, lista_fechados, variavel_controle, contador_iteracao)
                  
                   while(self.__verificacao_regras(variavel_controle)):
                         node = self.__creat_node_to_graph(variavel_controle)
@@ -239,16 +239,7 @@ class busca:
                   variavel_controle = lista_canditados_fila[0]
 
                   ### Str de interação
-                  retorno_str += 'Iteração nº '+str(contador_iteracao) + '\n'
-                  retorno_str += 'Lista de abertos:' 
-                  for i in lista_abertos:
-                        retorno_str += ('{} '.format(i))
-                  retorno_str += '\nLista de fechados: '
-                  for i in lista_fechados:
-                        retorno_str += ('{} '.format(i))
-                  retorno_str += '\nEstado atual: {}'.format(lista_canditados_fila[0])
-                  retorno_str += '\n'
-                  retorno_str += '-'*50 + '\n'
+                  retorno_str += self.__saida_intermediaria_str__(lista_abertos, lista_fechados, variavel_controle, contador_iteracao)
                  
                   while(self.__verificacao_regras(variavel_controle)):
                         node = self.__creat_node_to_graph(variavel_controle)
@@ -289,16 +280,7 @@ class busca:
                   variavel_controle = lista_abertos[-1]
 
                   ### Str de interação
-                  retorno_str += 'Iteração nº '+str(contador_iteracao) + '\n'
-                  retorno_str += 'Lista de abertos:' 
-                  for i in lista_abertos:
-                        retorno_str += ('{} '.format(i))
-                  retorno_str += '\nLista de fechados: '
-                  for i in lista_abertos:
-                        retorno_str += ('{} '.format(i))
-                  retorno_str += '\nEstado atual: {}'.format(lista_abertos[-1])
-                  retorno_str += '\n'
-                  retorno_str += '-'*50 + '\n'
+                  retorno_str += self.__saida_intermediaria_str__(lista_abertos, lista_fechados, variavel_controle, contador_iteracao)
 
                   if(self.__verificacao_regras(variavel_controle)):
                         node = self.__creat_node_to_graph(variavel_controle)
